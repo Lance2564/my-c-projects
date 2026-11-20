@@ -1,0 +1,6 @@
+This will explain how to use this project. First open your terminal. 
+
+git clone https://github.com/Lancee2564/my-c-projects.git "path"
+cd "path"/projects/bank (OR "path"\projects\bank if on windows)
+make
+./bank
