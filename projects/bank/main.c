@@ -1,17 +1,32 @@
 #include "account.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
+#define INITIAL_CAPACITY 10
 int main(void) {
     double dollars; // Dollars because people enter dollars, not cents
     int choice;     // User choice(1 - 6)
     int id;         // Account id
 
-    Account dummy = {-1, "dummy", 0};                          // Dummy account
-    Account sentinel = {-2, "sentinel", 0};                    // Sentinel account
-    Account accounts[10] = {sentinel, dummy};                  // Initialising the accounts array
-    Account *user_acc;                                         // The current user account being worked on
-    int num_accounts = sizeof(accounts) / sizeof(accounts[0]); // Getting total accounts(10)
+    Account dummy = {-1, "dummy", 0};                               // Dummy account
+    Account sentinel = {-2, "sentinel", 0};                         // Sentinel account
+    int num_accounts = INITIAL_CAPACITY;                            // sets number of accounts to ten
+    Account *accounts = malloc(INITIAL_CAPACITY * sizeof(Account)); // makes an accounts pointer for ten accounts
+
+    // if can't allocate memory, says so and exits with status -1
+    if (accounts == NULL) {
+        printf("Something went terribly wrong!\n");
+        return -1;
+    }
+
+    // sets first account to sentinel and all others to dummy
+    accounts[0] = sentinel;
+    for (int i = 1; i < 10; i++)
+        accounts[i] = dummy;
+
+    // The current user account being worked on
+    Account *user_acc;
 
     while (1) {
         print_menu();                                          // Prints the menu
@@ -79,7 +94,7 @@ int main(void) {
                 else
                     printf("Account not found!\n");
                 break;
-            case TRANSFER:
+            case TRANSFER:; // empty statement to get rid of 'label followed by declaration' warning
                 // Gets account ids, and amount
                 int donor_acc_id = get_int("Please enter the id of the donor account: ");
                 int receiver_acc_id = get_int("Please enter the id of thr receiver account: ");
@@ -114,13 +129,14 @@ int main(void) {
                 else
                     printf("Receiver account doesn't exist!\n");
                 break;
-            case ADD_ACC:
+            case ADD_ACC:; // empty statement to get rid of 'label followed by declaration' warning
                 // Gets the name and strips the newline
                 char name[100];
                 printf("Please enter your name: ");
                 fgets(name, sizeof(name), stdin);
                 name[strcspn(name, "\n")] = '\0';
 
+                // Tries to add the account.
                 int add_account_status = add_account(name, accounts, sentinel, num_accounts);
 
                 switch (add_account_status) {
@@ -129,7 +145,13 @@ int main(void) {
                         printf("Your id is: %d\n", get_sentinel(accounts, sentinel, num_accounts) - 1);
                         break;
                     case ACCOUNT_FULL_ERR:
-                        printf("Sorry, there are no more account slots!\n");
+                        // Increases the capacity of the array, to fit more accounts
+                        accounts = increase_array_capacity(accounts, &num_accounts);
+
+                        // Adds the account and informs the user of their id
+                        add_account(name, accounts, sentinel, num_accounts);
+                        printf("Successfully added!\n");
+                        printf("Your id is: %d\n", get_sentinel(accounts, sentinel, num_accounts) - 1);
                         break;
                 }
                 break;
@@ -146,6 +168,10 @@ int main(void) {
                 break;
         }
     }
+
+    // Cleanup
+    free(accounts);
+    accounts = NULL;
 
     return 0;
 }
