@@ -29,5 +29,6 @@ void print_menu(void);
 int get_int(const char *prompt);
 bool validate_find_account(Account *find_acc_result);
 long long int dollars_to_cents(double dollars);
+Account *increase_array_capacity(Account *array, int *max_size);
 
 #endif
