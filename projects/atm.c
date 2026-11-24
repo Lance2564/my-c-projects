@@ -39,9 +39,8 @@ int main(void) {
                 printf("What sort of money would you like to deposit(refer to above guide) ");
                 scanf(" %c", &coin_key);
 
-                coin_cents = coin_value(coin_key); // Gets the value of q, p, etc.
-                balance += coin_cents;             // Adds that value to the balance
-
+                deposit_cents(&balance, coin_key); // Deposits the money into balance
+               
                 printf("You now have %d¢!\n", balance);
 
                 break;
@@ -49,7 +48,7 @@ int main(void) {
                 printf("What would you like to buy?\n");
                 scanf("%u", &selected_item);
 
-                balance = try_purchase(balance, selected_item); // Tries to purchase the items
+                try_purchase(&balance, selected_item); // Tries to purchase the items
 
                 printf("You have %d¢ left\n", balance); // Tells how much balance is left
                 break;
@@ -109,22 +108,24 @@ int coin_value(char key) {
     return x;
 }
 
-int try_purchase(int balance, Product x) {
+void deposit_cents(int *balance, char key) {
+    *balance += coin_value(key);
+}
+
+void try_purchase(int *balance, Product x) {
     if (stock[x] == 0) {
         printf("Sold out!\n");
     }
-    else if (balance < price_of(x)) {
+    else if (*balance < price_of(x)) {
         printf("Not enough money!\n");
         printf("You need %d more", price_of(x) - balance);
     }
     else {
-        balance -= price_of(x);
+        *balance -= price_of(x);
         stock[x]--;
         printf("Enjoy your ");
         print_name(x);
     }
-
-    return balance;
 }
 
 int price_of(Product item) {
