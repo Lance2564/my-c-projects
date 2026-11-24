@@ -10,7 +10,8 @@ typedef enum { ON = 1, OFF = 0 } State;
 // Function prototypes
 void print_instructions(void);
 int coin_value(char key);
-int try_purchase(int balance, Product x);
+void deposit_cents(int *balance, char key);
+int try_purchase(int *balance, Product x);
 int price_of(Product item);
 void print_name(Product item);
 
