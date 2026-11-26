@@ -1,6 +1,6 @@
 this is a guide on how to use this project
 
 git clone https://github.com/Lancee2564/my-c-projects.git "path"
-cd "path"/projects/calculator (OR "path"\projects\bank if on calculator)
+cd "path"/projects/calculator (OR "path"\projects\calculator if on windows)
 make
 ./calculator
